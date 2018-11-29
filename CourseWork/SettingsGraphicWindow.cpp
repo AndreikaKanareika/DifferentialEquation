@@ -49,13 +49,13 @@ LRESULT CALLBACK WndProc2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CreateWindowEx(NULL, "static", "Шаг:", WS_VISIBLE | WS_CHILD, 10, 300, 50, 20, hWnd, (HMENU)0, NULL, NULL);
 		hStep = CreateWindowEx(NULL, "edit", "step", WS_VISIBLE | WS_CHILD | WS_BORDER, 70, 300, 50, 20, hWnd, (HMENU)ID_SETTING_COORDLINESLENGTH, NULL, NULL);
 
-		hColorComboBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("combobox"), "", WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL, 210, 240, 150, 100, hWnd, (HMENU)ID_SETTING_COLORCOMBOBOX, NULL, NULL);
+		hColorComboBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("combobox"), "", WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_AUTOVSCROLL, 220, 240, 180, 100, hWnd, (HMENU)ID_SETTING_COLORCOMBOBOX, NULL, NULL);
 		AddStringInComboBox(hColorComboBox, (LPARAM)"Красный", (LPARAM)RGB(255, 0, 0));
 		AddStringInComboBox(hColorComboBox, (LPARAM)"Зеленый", (LPARAM)RGB(0, 255, 0));
 		AddStringInComboBox(hColorComboBox, (LPARAM)"Синий", (LPARAM)RGB(0, 0, 255));
 
-		CreateWindowEx(NULL, "button", "Сохранить", WS_VISIBLE | WS_CHILD | WS_BORDER, 20, 350, 100, 50, hWnd, (HMENU)ID_SETTING_BUTTONSAVE, NULL, NULL);
-		CreateWindowEx(NULL, "button", "Отмена", WS_VISIBLE | WS_CHILD | WS_BORDER, 210, 350, 100, 50, hWnd, (HMENU)ID_SETTING_BUTTONCANCEL, NULL, NULL);
+		CreateWindowEx(NULL, "button", "Сохранить", WS_VISIBLE | WS_CHILD | WS_BORDER, 20, 350, 180, 50, hWnd, (HMENU)ID_SETTING_BUTTONSAVE, NULL, NULL);
+		CreateWindowEx(NULL, "button", "Отмена", WS_VISIBLE | WS_CHILD | WS_BORDER, 220, 350, 180, 50, hWnd, (HMENU)ID_SETTING_BUTTONCANCEL, NULL, NULL);
 
 		break;
 	case WM_COMMAND:

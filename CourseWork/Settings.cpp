@@ -11,7 +11,7 @@ void InitSettings(Settings &settings)
 	settings.marginBottom = 50;
 
 	settings.bottomHorizontalMarginText = -10;
-	settings.leftHorizontalMarginText = -30;
+	settings.leftHorizontalMarginText = -40;
 	settings.bottomVerticalMarginText = 0;
 	settings.leftVerticalMarginText = -10;
 

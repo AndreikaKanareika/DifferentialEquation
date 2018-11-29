@@ -4,45 +4,19 @@ using namespace std;
 
 
 
-
-
-
-
-// Ошибки:
-
-// Не закрытая скобка
-// cos(x
-// FIXED
-
-// Отсутствие знака между операндами
-// cos(x)x
-// cos(x)sin(x)
-// FIXED
-
-double ReversePolishNotation(string s, double x, double y) 
-{
-	regex regexFunc("(\\d+(\\.\\d+)?)|[\\+\\-\\^\\*\\/\\(\\)]|sin\\(|cos\\(|tg\\(|ctg\\(|asin\\(|acos\\(|atan\\(|sinh\\(|cosh\\(|tanh\\(|exp\\(|log\\(|log10\\(|sqrt\\(");
-	vector<string> splitedString;
-	vector<string> reversePolishStr;
-
-	if (!PrepareStr(s, x, y, splitedString, regexFunc))
-	{	
-		throw invalid_argument("Invalid function");
-	}
-	
-	reversePolishStr = FormPolishStr(splitedString);
-	
-	return Calculate(reversePolishStr, x,y);
-}
-
-
-bool PrepareStr(string s, double x, double y, vector<string> &splitedString, regex regexFunc)
+bool PrepareStr(string s, vector<string> &splitedString, regex regexFunc)
 {
 	smatch m;
 
 	if (regex_search(s, m, regex("[\\+\\-\\^\\*\\/]{2,}")))
 		return false;
 
+	if (regex_search(s, m, regex("_")))
+		return false;
+
+	s.insert(0, "(");
+	s = s.append(")");
+	s = regex_replace(s, regex("exp"), "_exp_");
 	s = regex_replace(s, regex("\\(-"), "(0-");
 
 	if (!ValidateCountOperatorsAndOperands(s))
@@ -59,14 +33,9 @@ bool PrepareStr(string s, double x, double y, vector<string> &splitedString, reg
 
 	s = regex_replace(s, regex("x"), "(x)");
 	s = regex_replace(s, regex("y"), "(y)");
-//	s = regex_replace(s, regex("x"), to_string(x));
-//	s = regex_replace(s, regex("y"), to_string(y));
 	s = regex_replace(s, regex(","), ".");
 	s = regex_replace(s, regex(" "), "");
-
-
-	s.insert(0, "(");
-	s = s.append(")");
+	s = regex_replace(s, regex("_e\\(x\\)p_"), "exp");
 
 
 	int startLength = s.length();
@@ -97,9 +66,10 @@ bool ValidateCountOperatorsAndOperands(string s)
 		tempStr = m.suffix();
 	}
 	tempStr = s;
-	while (regex_search(tempStr, m, regex("x|y|(\\d+(\\.\\d+)?)")))
+	while (regex_search(tempStr, m, regex("x|y|exp|(\\d+(\\.\\d+)?)")))
 	{
-		countOperands++;
+		if (m[0] != "exp")
+			countOperands++;
 		tempStr = m.suffix();
 	}
 
@@ -258,7 +228,7 @@ double CalculateFunc(double value, string s)
 
 double CalculateOperation(double a, double b, string s)
 {
-	if (s == "*") return (a*b);
+	if (s == "*") return (a * b);
 	if (s == "/") return (a / b);
 	if (s == "+") return (a + b);
 	if (s == "-") return (a - b);
@@ -297,8 +267,6 @@ void GoBackByBrakets(vector<string> &reversePolishStr, stack<string> &st)
 	int pos = st.top().find('(', 0);
 	while (pos < 0)		
 	{
-		// Может быть исключение
-
 		reversePolishStr.push_back(st.top());
 		st.pop();
 

@@ -7,7 +7,6 @@ int APIENTRY _tWinMain(HINSTANCE This, HINSTANCE Prev, LPTSTR cmd, int mode)
 {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-
 	TCHAR className[] = "My";
 	TCHAR className2[] = "My2";
 	TCHAR windowName[] = "Graphic";
@@ -18,7 +17,7 @@ int APIENTRY _tWinMain(HINSTANCE This, HINSTANCE Prev, LPTSTR cmd, int mode)
 	
 	
 	hWnd = CreateAndRegisterWindow(This, className, windowName, WndProc, WS_OVERLAPPEDWINDOW, 500,700);
-	hWnd2 = CreateAndRegisterWindow(This, className2, windowName2, WndProc2, WS_OVERLAPPED | WS_CAPTION, 500, 500);
+	hWnd2 = CreateAndRegisterWindow(This, className2, windowName2, WndProc2, WS_OVERLAPPED | WS_CAPTION, 450, 450);
 	
 	ShowWindow(hWnd, mode);
 	

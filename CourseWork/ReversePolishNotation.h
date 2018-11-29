@@ -8,8 +8,8 @@
 
 using namespace std;
 
-double ReversePolishNotation(string s, double x, double y);
-bool PrepareStr(string s, double x, double y, vector<string> &splitedString, regex regexFunc);
+
+bool PrepareStr(string s, vector<string> &splitedString, regex regexFunc);
 
 bool ValidateCountOperatorsAndOperands(string s);
 bool ValidateCountBrackets(string s);

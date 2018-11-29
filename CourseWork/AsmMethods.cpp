@@ -9,8 +9,8 @@ Point* Eiler(double a, double b, double h, double y, double x)
 	
 	for (int i=0; i<countPoints; i++)
 	{
-		double f1 = F(x, y);
-		double f2 = F(x + h, y + h * F(x, y));
+		double f1 = FAsm(x, y);
+		double f2 = FAsm(x + h, y + h * FAsm(x, y));
 
 		_asm
 		{
@@ -57,18 +57,18 @@ Point* Adams(double a, double b, double h, double y, double x)
 	points[0] = Point{ x,y };		
 	x += h;	
 
-	double y1 = y + h * F(x, y);
-	double y2 = y1 + h * F(x + h, y1);
-	double y3 = y2 + h * F(x + 2 * h, y2);
-	double y4 = y3 + h * F(x + 3 * h, y3);
+	double y1 = y + h * FAsm(x, y);
+	double y2 = y1 + h * FAsm(x + h, y1);
+	double y3 = y2 + h * FAsm(x + 2 * h, y2);
+	double y4 = y3 + h * FAsm(x + 3 * h, y3);
 	double y5;
 		
 	for (int i=1; i<countPoints; i++)
 	{
-		double f1 = F(x + 4 * h, y4);
-		double f2 = F(x + 3 * h, y3);
-		double f3 = F(x + 2 * h, y2);;
-		double f4 = F(x + h, y1);
+		double f1 = FAsm(x + 4 * h, y4);
+		double f2 = FAsm(x + 3 * h, y3);
+		double f3 = FAsm(x + 2 * h, y2);;
+		double f4 = FAsm(x + h, y1);
 
 		int fiftyFive = 55;
 		int fiftyNine = 59;
@@ -145,7 +145,7 @@ Point* Adams(double a, double b, double h, double y, double x)
 }
 
 
-double F(double x, double y)
+double FAsm(double x, double y)
 {
 	double res;
 

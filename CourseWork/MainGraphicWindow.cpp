@@ -51,32 +51,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_CREATE:
-		CreateWindowEx(NULL, "static", "y'=", WS_VISIBLE | WS_CHILD, 20, 20, 25, 20, hWnd, (HMENU)0, NULL, NULL);
+		CreateWindowEx(NULL, "static", "y'=", WS_VISIBLE | WS_CHILD | WS_BORDER, 20, 20, 25, 20, hWnd, (HMENU)0, NULL, NULL);
 		hDY = CreateWindowEx(NULL, "edit", functionStr.c_str(), WS_VISIBLE | WS_CHILD | WS_BORDER, 50, 20, 400, 20, hWnd, (HMENU)ID_DY, NULL, NULL);
-		CreateWindowEx(NULL, "static", "y0=", WS_VISIBLE | WS_CHILD, 20, 50, 30, 20, hWnd, (HMENU)0, NULL, NULL);
+		CreateWindowEx(NULL, "static", "y0=", WS_VISIBLE | WS_CHILD | WS_BORDER, 20, 50, 30, 20, hWnd, (HMENU)0, NULL, NULL);
 		hYStart = CreateWindowEx(NULL, "edit", "0", WS_VISIBLE | WS_CHILD | WS_BORDER, 50, 50, 45, 20, hWnd, (HMENU)0, NULL, NULL);
 	
 	
-		CreateWindowEx(NULL, "button", "Мод. метод Эйлера", WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON, 10, 80, 150, 20, hWnd, (HMENU)ID_RADIOBTN_EILER, NULL, NULL);
-		CreateWindowEx(NULL, "button", "Метод Адамса", WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON, 10, 105, 150, 20, hWnd, (HMENU)ID_RADIOBTN_ADAMS, NULL, NULL);
+		CreateWindowEx(NULL, "button", "Мод. метод Эйлера", WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON | WS_BORDER, 10, 80, 160, 20, hWnd, (HMENU)ID_RADIOBTN_EILER, NULL, NULL);
+		CreateWindowEx(NULL, "button", "Метод Адамса", WS_VISIBLE | WS_CHILD | BS_AUTORADIOBUTTON | WS_BORDER, 10, 105, 160, 20, hWnd, (HMENU)ID_RADIOBTN_ADAMS, NULL, NULL);
 
 
-		CreateWindowEx(NULL, "button", "Построить график", WS_VISIBLE | WS_CHILD, 10, 130, 150, 30, hWnd, (HMENU)ID_BTN_DRAWGRAPHIC, NULL, NULL);
+		CreateWindowEx(NULL, "button", "Построить график", WS_VISIBLE | WS_CHILD | WS_BORDER, 10, 130, 160, 30, hWnd, (HMENU)ID_BTN_DRAWGRAPHIC, NULL, NULL);
 	
+		CreateWindowEx(NULL, "static", " ASM", WS_VISIBLE | WS_CHILD | WS_BORDER, 365, 50, 40, 20, hWnd, (HMENU)0, NULL, NULL);
+		CreateWindowEx(NULL, "button", "Мод. метод Эйлера", WS_VISIBLE | WS_CHILD | WS_BORDER, 300, 80, 150, 20, hWnd, (HMENU)ID_ASM_EILER, NULL, NULL);
+		CreateWindowEx(NULL, "button", "Метод Адамса", WS_VISIBLE | WS_CHILD | WS_BORDER, 300, 105, 150, 20, hWnd, (HMENU)ID_ASM_ADAMS, NULL, NULL);
 
-		CreateWindowEx(NULL, "button", "Мод. метод Эйлера", WS_VISIBLE | WS_CHILD, 300, 80, 150, 20, hWnd, (HMENU)ID_ASM_EILER, NULL, NULL);
-		CreateWindowEx(NULL, "button", "Метод Адамса", WS_VISIBLE | WS_CHILD, 300, 105, 150, 20, hWnd, (HMENU)ID_ASM_ADAMS, NULL, NULL);
 
-
-		CreateWindowEx(NULL, "button", "SCILAB", WS_VISIBLE | WS_CHILD, 300, 150, 150, 20, hWnd, (HMENU)SCILAB, NULL, NULL);
+		CreateWindowEx(NULL, "button", "SCILAB", WS_VISIBLE | WS_CHILD | WS_BORDER, 300, 130, 150, 30, hWnd, (HMENU)SCILAB, NULL, NULL);
 
 
 		GetClientSize(rect, width, height, panelElementsHeight, settings.marginLeft, settings.marginRight, settings.marginTop, settings.marginBottom);
 		
 
-		//////////////////////////////////
-		//
-		//
 		try
 		{
 			yMax = yMin = yStart;
@@ -91,10 +88,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			MessageBox(hWnd, ex.what(), "Error", NULL);
 		}
-		//
-		//
-		//////////////////////////////////////
-
+		
 		break;
 
 	case WM_COMMAND:
@@ -135,17 +129,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_ASM_EILER:
 			
-			/////////////////////////////
-			//
-			//
 			try
-			{
-				static double a = -1, b = 2, h=0.1, y=0, x=a;
+			{				
+				settings.xStart = -1;
+				settings.xEnd = 2;
+				settings.step = 0.1;
+				yStart = 0;
 
-				countPoints = (b - a) / h;
-				yMax = yMin = y;
-				points = Eiler(a, b, h, y, x);
-				FindYMaxMin(points, countPoints, yMax, yMin);
+				countPoints = (settings.xEnd - settings.xStart) / settings.step;
+				yMax = yMin = yStart;
+				points = Eiler(settings.xStart, settings.xEnd, settings.step, yStart, settings.xStart);
+				FindYMaxMin(points, countPoints, yMax, yMin); 
+
+				TCHAR msg[100];
+				snprintf(msg, 100, "Погрешность модифицированного метода Эйлера равна %f", GetDelta(points, countPoints));
+				MessageBox(hWnd, msg, "Погрешность мод.метода Эйлера", NULL);
+
 			}
 			catch (overflow_error ex)
 			{
@@ -156,24 +155,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				MessageBox(hWnd, ex.what(), "Error", NULL);
 			}
 			InvalidateRect(hWnd, &rect, true);
-			//
-			//
-			/////////////////////////////////////
+			
 			break;
 					   
 		case ID_ASM_ADAMS:
-
-			///////////////////////////////////
-			//
-			//
+			
 			try
 			{
-				static double a = -1, b = 2, h = 0.1, y = 0, x = a;
+				settings.xStart = -1;
+				settings.xEnd = 2;
+				settings.step = 0.1;
+				yStart = 0;
 
-				countPoints = (b - a) / h;
+				countPoints = (settings.xEnd - settings.xStart) / settings.step;
 				yMax = yMin = yStart;
-				points = Adams(a, b, h, y, x);
+				points = Adams(settings.xStart, settings.xEnd, settings.step, yStart, settings.xStart);
 				FindYMaxMin(points, countPoints, yMax, yMin);
+
+
+				TCHAR msg[100];
+				snprintf(msg, 100, "Погрешность метода Адамса равна %f", GetDelta(points, countPoints));
+				MessageBox(hWnd, msg, "Погрешность метода Адамса", NULL);
 			}
 			catch (overflow_error ex)
 			{
@@ -184,10 +186,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				MessageBox(hWnd, ex.what(), "Error", NULL);
 			}
 			InvalidateRect(hWnd, &rect, true);
-			break;
-			//
-			//
-			//////////////////////////////////////////
+			break;			
 
 		case SCILAB:
 			
@@ -264,7 +263,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DrawXYAxis(hDC, settings.marginLeft, settings.marginTop, panelElementsHeight, width, height, settings.xStart, settings.xEnd, yMax, yMin);
 
 			// Draw graphic
-
 			hPen = CreatePen(0, 2, settings.color);
 			SelectObject(hDC, hPen);
 
@@ -363,7 +361,7 @@ Point *InitPointsArray(string functionStr, double xStart, double yStart, double 
 	case METHOD_EILER:
 		for (int i = 1; i < countPoints; i++)
 		{
-			y += (F(functionStr, x, y) + F(functionStr, x + step, y + step * F(functionStr, x, y)))* step / 2;
+			y += (FPolishNotation(functionStr, x, y) + FPolishNotation(functionStr, x + step, y + step * FPolishNotation(functionStr, x, y)))* step / 2;
 
 			if (y == INFINITY) throw overflow_error("y = INFINITY");
 			if (isnan(y)) throw invalid_argument("y = NaN");
@@ -375,17 +373,17 @@ Point *InitPointsArray(string functionStr, double xStart, double yStart, double 
 
 
 	case METHOD_ADAMS:
-		double y1 = y + step * F(functionStr, x, y);
-		double y2 = y1 + step * F(functionStr, x + step, y1);
-		double y3 = y2 + step * F(functionStr, x + 2 * step, y2);
-		double y4 = y3 + step * F(functionStr, x + 3 * step, y3);
+		double y1 = y + step * FPolishNotation(functionStr, x, y);
+		double y2 = y1 + step * FPolishNotation(functionStr, x + step, y1);
+		double y3 = y2 + step * FPolishNotation(functionStr, x + 2 * step, y2);
+		double y4 = y3 + step * FPolishNotation(functionStr, x + 3 * step, y3);
 
 		for (int i = 1; i < countPoints; i++)
 		{
-			double f1 = F(functionStr, x + 4 * step, y4);
-			double f2 = F(functionStr, x + 3 * step, y3);
-			double f3 = F(functionStr, x + 2 * step, y2);;
-			double f4 = F(functionStr, x + step, y1);
+			double f1 = FPolishNotation(functionStr, x + 4 * step, y4);
+			double f2 = FPolishNotation(functionStr, x + 3 * step, y3);
+			double f3 = FPolishNotation(functionStr, x + 2 * step, y2);;
+			double f4 = FPolishNotation(functionStr, x + step, y1);
 
 			double y5 = y4 + step / 24 * (55 * f1 - 59 * f2 + 37 * f3 - 9 * f4);
 
@@ -403,7 +401,6 @@ Point *InitPointsArray(string functionStr, double xStart, double yStart, double 
 		}
 		break;
 	}
-	
 
 	return points;
 }
@@ -497,10 +494,11 @@ void DrawXYAxis(HDC hDC, int marginLeft, int marginTop, int panelElementsHeight,
 }
 
 
-double F(string str, double x, double y)
+double FPolishNotation(string str, double x, double y)
 {
 	static string prevStr = "";
 	static vector<string> reversePolishStr;
+	
 
 	if (prevStr != str)
 	{
@@ -508,7 +506,7 @@ double F(string str, double x, double y)
 		vector<string> splitedString;
 
 
-		if (!PrepareStr(str, x, y, splitedString, regexFunc))
+		if (!PrepareStr(str, splitedString, regexFunc))
 		{
 			throw invalid_argument("Invalid function");
 		}
@@ -516,13 +514,14 @@ double F(string str, double x, double y)
 		reversePolishStr = FormPolishStr(splitedString);		
 		prevStr = str;
 	}
+	
 
 
 	return Calculate(reversePolishStr, x,y);
 }
 
 
-
+	
 void FindYMaxMin(Point arr[], int countPoints, double &yMax, double &yMin)
 {
 	for (int i = 0; i < countPoints; i++)
@@ -535,8 +534,16 @@ void FindYMaxMin(Point arr[], int countPoints, double &yMax, double &yMin)
 
 	if (yMax == yMin)
 	{
-		yMax += yMax / 10;
-		yMin -= yMin / 10;
+		if (yMax == 0)
+		{
+			yMax = 1;
+			yMin = -1;
+		}
+		else
+		{
+			yMax += yMax / 10;
+			yMin -= yMin / 10;
+		}		
 	}
 }
 
@@ -547,5 +554,24 @@ void ClearStr(TCHAR *str, int length)
 	{
 		str[i] = '\0';
 	}
+}
+
+
+double FCpp(double x)
+{
+	return (6 * sin(x) - 2 * pow(sin(x), 3)) / (3 * cos(x));
+}
+
+
+double GetDelta(Point arr[], int countPoints)
+{
+	double delta = 0;
+	for (int i = 0; i < countPoints; i++)
+	{
+		delta += fabs(arr[i].y - FCpp(arr[i].x));
+	}
+	delta /= countPoints;
+
+	return delta;	
 }
 

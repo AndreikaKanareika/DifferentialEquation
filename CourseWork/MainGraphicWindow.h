@@ -31,4 +31,6 @@ void FindYMaxMin(Point arr[], int countPoints, double &yMax, double &yMin);
 
 void ClearStr(TCHAR *str, int length);
 
-double F(string str, double x, double y);
+double FPolishNotation(string str, double x, double y);
+double FCpp(double x);
+double GetDelta(Point arr[], int countPoints);
